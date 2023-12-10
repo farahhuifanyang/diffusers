@@ -172,6 +172,8 @@ class AudioLDM2Pipeline(DiffusionPipeline):
             vocoder=vocoder,
         )
         self.vae_scale_factor = 2 ** (len(self.vae.config.block_out_channels) - 1)
+        
+        self.gpt2_output = None
 
     # Copied from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline.enable_vae_slicing
     def enable_vae_slicing(self):
@@ -255,9 +257,10 @@ class AudioLDM2Pipeline(DiffusionPipeline):
             model_inputs = prepare_inputs_for_generation(inputs_embeds, **model_kwargs)
 
             # forward pass to get next hidden states
-            output = self.language_model(**model_inputs, return_dict=True)
+            output = self.language_model(**model_inputs, return_dict=True, output_attentions=True, output_hidden_states= True)
 
             next_hidden_states = output.last_hidden_state
+            self.gpt2_output = output
 
             # Update the model input
             inputs_embeds = torch.cat([inputs_embeds, next_hidden_states[:, -1:, :]], dim=1)
