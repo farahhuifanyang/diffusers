@@ -901,6 +901,8 @@ class AudioLDM2Pipeline(DiffusionPipeline):
             negative_attention_mask=negative_attention_mask,
             max_new_tokens=max_new_tokens,
         )
+        
+        # gpt2_output = self.gpt2_output
 
         # 4. Prepare timesteps
         self.scheduler.set_timesteps(num_inference_steps, device=device)
@@ -983,4 +985,4 @@ class AudioLDM2Pipeline(DiffusionPipeline):
         if not return_dict:
             return (audio,)
 
-        return AudioPipelineOutput(audios=audio)
+        return AudioPipelineOutput(audios=audio), self.gpt2_output
