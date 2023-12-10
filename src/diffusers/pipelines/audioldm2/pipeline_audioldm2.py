@@ -270,6 +270,9 @@ class AudioLDM2Pipeline(DiffusionPipeline):
 
         return inputs_embeds[:, -max_new_tokens:, :]
 
+    def return_gpt2_output(self):
+        return self.gpt2_output
+    
     def encode_prompt(
         self,
         prompt,
