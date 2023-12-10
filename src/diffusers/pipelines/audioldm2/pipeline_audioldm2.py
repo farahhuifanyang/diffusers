@@ -963,7 +963,7 @@ class AudioLDM2Pipeline(DiffusionPipeline):
             latents = 1 / self.vae.config.scaling_factor * latents
             mel_spectrogram = self.vae.decode(latents).sample
         else:
-            return AudioPipelineOutput(audios=latents)
+            return AudioPipelineOutput(audios=latents), self.gpt2_output
 
         audio = self.mel_spectrogram_to_waveform(mel_spectrogram)
 
@@ -983,6 +983,6 @@ class AudioLDM2Pipeline(DiffusionPipeline):
             audio = audio.numpy()
 
         if not return_dict:
-            return (audio,)
+            return (audio,, self.gpt2_output)
 
         return AudioPipelineOutput(audios=audio), self.gpt2_output
